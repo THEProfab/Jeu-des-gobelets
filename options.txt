@@ -1,0 +1,4 @@
+OPTIONS
+
+Nombre joueurs : 1
+IA : Avancée
