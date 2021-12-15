@@ -13,6 +13,10 @@ def validationGobelet(choixGobelet):
     return choixGobelet
 
 def peutJouer(joueurs, joueur, grille, valeursGobelets):
+    # si le joueur n'a plus de gobelets, il ne peut plus jouer
+    if (joueurs[tourDe]["petits"]==0 and joueurs[tourDe]["moyens"]==0 or joueurs[tourDe]["grands"]==0):
+        return False
+
     # récupération de la plus petite valeur de gobelet présente dans la grille
     minValGrille = 3
     for ligne in range(1, len(grille)):
@@ -154,7 +158,7 @@ while (choix!=4):
             while (True):
                 print("C'est au tour du Joueur",tourDe,"!")
 
-                if ((joueurs[tourDe]["petits"]!=0 or joueurs[tourDe]["moyens"]!=0 or joueurs[tourDe]["grands"]!=0) and peutJouer(joueurs, tourDe, grille, valeursGobelets)):
+                if (peutJouer(joueurs, tourDe, grille, valeursGobelets)):
                     choixGobelet = input("Choisissez la taille du gobelet à poser (p, m ou g) : ")
                     choixGobelet = validationGobelet(choixGobelet)
 
