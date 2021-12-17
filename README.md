@@ -4,6 +4,8 @@ Projet réalisé en Python (version 3.10) dans le cadre d'un cours d'algorithmiq
 
 Variante du morpion dans laquelle les joueurs possèdent des gobelets de différentes tailles, pouvant ainsi recouvrir les gobelets avec un de plus grande taille.
 
+Il y a, pour l'instant, la possibilité de jouer à 2 joueurs ou seul contre une IA simple, jouant au hasard.
+
 ## Librairies utilisées (internes à Python)
 
 - random
