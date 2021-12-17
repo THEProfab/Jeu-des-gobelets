@@ -204,11 +204,13 @@ while (choix!="4"):
 
                         caseChoisie = random.choice(casesValables)
 
+                        # on place le gobelet de valeur +1 par rapport à la valeur de la case choisie sur cette dernière
                         for cle in valeursGobelets[2].keys():
                             if (valeursGobelets[2][cle]==caseChoisie[2]+1):
                                 choixGobelet = cle
                                 grille[caseChoisie[0]][caseChoisie[1]] = cle
 
+                        # on récupère la taille du gobelet joué pour pouvoir l'enlever des gobelets de l'IA
                         for cle in representationGobelets[2].keys():
                             if (representationGobelets[2][cle]==choixGobelet):
                                 tailleGobelet = cle
