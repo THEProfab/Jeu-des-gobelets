@@ -1,4 +1,4 @@
 OPTIONS
 
-Nombre joueurs : 2
-IA : Avancée
+Nombre joueurs : 1
+IA : Simple

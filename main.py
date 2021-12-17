@@ -1,4 +1,5 @@
 import re
+import random
 
 def affichageGrille(grille):
     for ligne in grille:
@@ -154,18 +155,19 @@ while (choix!="4"):
         valeursGobelets = {1: {" ": 0, ".": 1, "x": 2, "X": 3}, 2: {" ": 0, "o": 1, "O": 2, "0": 3}}
         representationGobelets = {1: {"petits": ".", "moyens": "x", "grands": "X"}, 2: {"petits": "o", "moyens": "O", "grands": "0"}}
 
-        if (nbJoueurs=="2"):
-            print("Joueur 1 :", joueurs[1]["petits"], "petit(s) gobelet(s),", joueurs[1]["moyens"], "moyen(s) gobelet(s) et", joueurs[1]["grands"],"grand(s) gobelet(s).")
-            print("Joueur 2 :", joueurs[2]["petits"], "petit(s) gobelet(s),", joueurs[2]["moyens"], "moyen(s) gobelet(s) et", joueurs[2]["grands"],"grand(s) gobelet(s).")
-            print()
+        print("Joueur 1 :", joueurs[1]["petits"], "petit(s) gobelet(s),", joueurs[1]["moyens"], "moyen(s) gobelet(s) et", joueurs[1]["grands"],"grand(s) gobelet(s).")
+        print("Joueur 2 :", joueurs[2]["petits"], "petit(s) gobelet(s),", joueurs[2]["moyens"], "moyen(s) gobelet(s) et", joueurs[2]["grands"],"grand(s) gobelet(s).")
+        print()
 
-            affichageGrille(grille)
-            tourDe = 1
+        affichageGrille(grille)
+        tourDe = 1
 
-            while (True):
-                print("C'est au tour du Joueur",tourDe,"!")
+        while (True):
+            print("C'est au tour du Joueur",tourDe,"!")
 
-                if (peutJouer(joueurs, tourDe, grille, valeursGobelets)):
+            if (peutJouer(joueurs, tourDe, grille, valeursGobelets)):
+                # jeu lors d'une partie 2 joueurs ou 1 joueur lors du tour de l'humain
+                if (nbJoueurs=="2" or (nbJoueurs=="1" and tourDe==1)):
                     choixGobelet = input("Choisissez la taille du gobelet à poser (p, m ou g) : ")
                     choixGobelet = validationGobelet(choixGobelet)
 
@@ -181,37 +183,66 @@ while (choix!="4"):
                     caseChoisie = choixCase(grille, valeurGobeletChoisi, valeursGobelets)
                     grille[caseChoisie[0]][caseChoisie[1]] = choixGobelet
 
-                    joueurs[tourDe].update({tailleGobelet: joueurs[tourDe][tailleGobelet]-1}) # on enlève 1 au nombre de gobelets restants du type que le joueur vient de placer
-
                 else:
-                    print("Vous ne pouvez pas jouer, vous passez votre tour !")
+                    if (niveauIA == "Simple"):
+                        # récupération de la plus grande valeur de gobelet encore disponible
+                        clesJoueur = list(joueurs[2].keys())
+                        maxValDispo = 0
+                        for cle in clesJoueur:
+                            if (joueurs[2][cle]>0):
+                                valeur = valeursGobelets[2][representationGobelets[2][cle]]
+                                if (valeur > maxValDispo):
+                                    maxValDispo = valeur
 
-                print()
-                print("Joueur 1 :", joueurs[1]["petits"], "petits gobelets,", joueurs[1]["moyens"], "moyens gobelets et", joueurs[1]["grands"],"grands gobelets.")
-                print("Joueur 2 :", joueurs[2]["petits"], "petits gobelets,", joueurs[2]["moyens"], "moyens gobelets et", joueurs[2]["grands"],"grands gobelets.")
-                print()
-                affichageGrille(grille)
+                        # on fait une liste de toutes les cases sur lesquelles l'IA peut jouer (si la valeur de la case est trop élevée par rapport aux gobelets restants de l'IA, cette case n'est pas ajoutée)
+                        casesValables = []
+                        for ligne in range(1,len(grille)):
+                            for colonne in range(1,len(grille[ligne])):
+                                if (grille[ligne][colonne] in valeursGobelets[1].keys()):
+                                    if (valeursGobelets[1][grille[ligne][colonne]] < maxValDispo):
+                                        casesValables.append([ligne, colonne, valeursGobelets[1][grille[ligne][colonne]]])
 
-                if (gagne(joueurs, 1, grille, representationGobelets)):
-                    print("Le Joueur 1 a gagné !")
-                    break
-                elif (gagne(joueurs, 2, grille, representationGobelets)):
-                    print("Le Joueur 2 a gagné !")
-                    break
+                        caseChoisie = random.choice(casesValables)
 
-                if (not(peutJouer(joueurs, 1, grille, valeursGobelets)) and not(peutJouer(joueurs, 2, grille, valeursGobelets))):
-                    print("Égalité, les deux joueurs ne peuvent plus jouer !")
-                    break
+                        for cle in valeursGobelets[2].keys():
+                            if (valeursGobelets[2][cle]==caseChoisie[2]+1):
+                                choixGobelet = cle
+                                grille[caseChoisie[0]][caseChoisie[1]] = cle
 
-                if (tourDe==1):
-                    tourDe=2
-                else:
-                    tourDe=1
+                        for cle in representationGobelets[2].keys():
+                            if (representationGobelets[2][cle]==choixGobelet):
+                                tailleGobelet = cle
 
-        elif (nbJoueurs=="1"):
-            print("test")
-        else:
-            print("Le nombre de joueurs n'est pas valide !")
+                    elif (niveauIA == "Avancée"):
+                        print("Pas implémenté")
+                        break
+
+                joueurs[tourDe].update({tailleGobelet: joueurs[tourDe][tailleGobelet]-1}) # on enlève 1 au nombre de gobelets restants du type que le joueur vient de placer
+
+            else:
+                print("Vous ne pouvez pas jouer, vous passez votre tour !")
+
+            print()
+            print("Joueur 1 :", joueurs[1]["petits"], "petit(s) gobelet(s),", joueurs[1]["moyens"], "moyen(s) gobelet(s) et", joueurs[1]["grands"],"grand(s) gobelet(s).")
+            print("Joueur 2 :", joueurs[2]["petits"], "petit(s) gobelet(s),", joueurs[2]["moyens"], "moyen(s) gobelet(s) et", joueurs[2]["grands"],"grand(s) gobelet(s).")
+            print()
+            affichageGrille(grille)
+
+            if (gagne(joueurs, 1, grille, representationGobelets)):
+                print("Le Joueur 1 a gagné !")
+                break
+            elif (gagne(joueurs, 2, grille, representationGobelets)):
+                print("Le Joueur 2 a gagné !")
+                break
+
+            if (not(peutJouer(joueurs, 1, grille, valeursGobelets)) and not(peutJouer(joueurs, 2, grille, valeursGobelets))):
+                print("Égalité, les deux joueurs ne peuvent plus jouer !")
+                break
+
+            if (tourDe==1):
+                tourDe=2
+            else:
+                tourDe=1
 
     elif (choix=="2"):
         print("Options :")
@@ -247,12 +278,12 @@ while (choix!="4"):
             file = open("options.txt", "w")
             for line in lines:
                 splited = line.split(" ")
-                if (splited[0]=="Nombre" and choixOptions==1): #Selon les choix faits, la bonne modification est effecuée
+                if (splited[0]=="Nombre" and choixOptions=="1"): #Selon les choix faits, la bonne modification est effecuée
                     if (choixType=="1"):
                         splited[3] = "1\n"
                     elif (choixType=="2"):
                         splited[3] = "2\n"
-                elif (splited[0]=="IA" and choixOptions==2):
+                elif (splited[0]=="IA" and choixOptions=="2"):
                     if (choixType=="1"):
                         splited[2] = "Simple\n"
                     elif (choixType=="2"):
@@ -275,6 +306,7 @@ while (choix!="4"):
         print("Crédits :")
         print("Développeur : Marc BAYART")
         print("Version de Python utilisée : 3.10")
+        print("Bibliothèques utilisées (internes) : random et re")
     else:
         print("Votre choix est invalide !")
 
