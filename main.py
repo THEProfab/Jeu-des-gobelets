@@ -1,3 +1,5 @@
+import re
+
 def affichageGrille(grille):
     for ligne in grille:
         for case in ligne:
@@ -44,18 +46,23 @@ def peutJouer(joueurs, joueur, grille, valeursGobelets):
     return False
 
 def choixCase(grille, valeurGobeletChoisi, valeursGobelets):
-    choixLigne = int(input("Choisissez la ligne de la grille où vous souhaitez placer votre gobelet (1 à 3) : "))
+    choixLigne = input("Choisissez la ligne de la grille où vous souhaitez placer votre gobelet (1 à 3) : ")
 
-    if (choixLigne>3 or choixLigne<1):
-        while (choixLigne>3 or choixLigne<1):
-            choixLigne = int(input("Veuillez saisir un numéro de ligne valide : "))
+    # le choix de la ligne doit être un chiffre entre 1 et 3 pour être valide
+    if (not(re.fullmatch('[1-3]', choixLigne))):
+        while (not(re.fullmatch('[1-3]', choixLigne))):
+            choixLigne = input("Veuillez choisir un numéro de ligne valide (1 à 3) : ")
 
-    choixColonne = int(input("Choisissez la colonne de la grille où vous souhaitez placer votre gobelet (1 à 3) : "))
+    choixColonne = input("Choisissez la colonne de la grille où vous souhaitez placer votre gobelet (1 à 3) : ")
 
-    if (choixColonne>3 or choixColonne<1):
-        while (choixColonne>3 or choixColonne<1):
-            choixColonne = int(input("Veuillez saisir un numéro de colonne valide : "))
+    # le choix de la colonne doit être un chiffre entre 1 et 3 pour être valide
+    if (not(re.fullmatch('[1-3]', choixColonne))):
+        while (not(re.fullmatch('[1-3]', choixColonne))):
+            choixColonne = input("Veuillez choisir un numéro de colonne valide (1 à 3) : ")
 
+    # on convertit les str en int pour pouvoir les utiliser comme index
+    choixLigne = int(choixLigne)
+    choixColonne = int(choixColonne)
     caseChoisie = grille[choixLigne][choixColonne]
 
     if (caseChoisie in valeursGobelets[1].keys()):
@@ -123,11 +130,11 @@ print("3) Crédits")
 print("4) Quitter")
 print()
 
-choix = int(input("Entrez le chiffre correspondant à votre choix : "))
+choix = input("Entrez le chiffre correspondant à votre choix : ")
 print()
 
-while (choix!=4):
-    if (choix==1):
+while (choix!="4"):
+    if (choix=="1"):
         print("Nouvelle partie :")
         print()
         file = open("options.txt", "r")
@@ -206,23 +213,23 @@ while (choix!=4):
         else:
             print("Le nombre de joueurs n'est pas valide !")
 
-    elif (choix==2):
+    elif (choix=="2"):
         print("Options :")
         print("1) Type de jeu")
         print("2) IA")
         print("3) Retour")
         print()
 
-        choixOptions = int(input("Entrez le chiffre correspondant à votre choix : "))
+        choixOptions = input("Entrez le chiffre correspondant à votre choix : ")
         print()
 
-        while (choixOptions!=3):
-            if (choixOptions==1):
+        while (choixOptions!="3"):
+            if (choixOptions=="1"):
                 print("Type de jeu :")
                 print("1) Un joueur")
                 print("2) Deux joueurs")
                 print()
-            elif (choixOptions==2):
+            elif (choixOptions=="2"):
                 print("IA")
                 print("1) Simple")
                 print("2) Avancée")
@@ -231,7 +238,7 @@ while (choix!=4):
                 print("Votre choix est invalide !") #Si l'utilisateur entre un mauvais choix, retour au premier menu pour ne pas toucher au fichier d'options
                 break
 
-            choixType = int(input("Entrez le chiffre correspondant à votre choix : "))
+            choixType = input("Entrez le chiffre correspondant à votre choix : ")
 
             file = open("options.txt", "r")
             lines = file.readlines() #on récupère tout le fichier d'options
@@ -241,14 +248,14 @@ while (choix!=4):
             for line in lines:
                 splited = line.split(" ")
                 if (splited[0]=="Nombre" and choixOptions==1): #Selon les choix faits, la bonne modification est effecuée
-                    if (choixType==1):
+                    if (choixType=="1"):
                         splited[3] = "1\n"
-                    elif (choixType==2):
+                    elif (choixType=="2"):
                         splited[3] = "2\n"
                 elif (splited[0]=="IA" and choixOptions==2):
-                    if (choixType==1):
+                    if (choixType=="1"):
                         splited[2] = "Simple\n"
-                    elif (choixType==2):
+                    elif (choixType=="2"):
                         splited[2] = "Avancée\n"
                 line = " ".join(splited)
                 file.write(line)
@@ -261,10 +268,10 @@ while (choix!=4):
             print("3) Retour")
             print()
 
-            choixOptions = int(input("Entrez le chiffre correspondant à votre choix : "))
+            choixOptions = input("Entrez le chiffre correspondant à votre choix : ")
             print()
 
-    elif (choix==3):
+    elif (choix=="3"):
         print("Crédits :")
         print("Développeur : Marc BAYART")
         print("Version de Python utilisée : 3.10")
@@ -280,5 +287,5 @@ while (choix!=4):
     print("4) Quitter")
     print()
 
-    choix = int(input("Entrez le chiffre correspondant à votre choix : "))
+    choix = input("Entrez le chiffre correspondant à votre choix : ")
     print()
