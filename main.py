@@ -17,7 +17,7 @@ def validationGobelet(choixGobelet):
 
 def peutJouer(joueurs, joueur, grille, valeursGobelets):
     # si le joueur n'a plus de gobelets, il ne peut plus jouer
-    if (joueurs[tourDe]["petits"]==0 and joueurs[tourDe]["moyens"]==0 or joueurs[tourDe]["grands"]==0):
+    if (joueurs[tourDe]["petits"]==0 and joueurs[tourDe]["moyens"]==0 and joueurs[tourDe]["grands"]==0):
         return False
 
     # récupération de la plus petite valeur de gobelet présente dans la grille
